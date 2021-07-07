@@ -18,6 +18,8 @@
 
 #include <libsolidity/formal/ModelCheckerSettings.h>
 
+#include <solidity/BuildInfo.h>
+
 #include <optional>
 #include <range/v3/view.hpp>
 
@@ -37,12 +39,26 @@ map<string, TargetType> const ModelCheckerTargets::targetStrings{
 	{"outOfBounds", TargetType::OutOfBounds}
 };
 
+namespace
+{
+
+bool versionAtLeast080()
+{
+	return tuple(ETH_PROJECT_VERSION_MAJOR, ETH_PROJECT_VERSION_MINOR, ETH_PROJECT_VERSION_PATCH) >= tuple(0, 8, 0);
+}
+
+}
+
 std::optional<ModelCheckerTargets> ModelCheckerTargets::fromString(string const& _targets)
 {
 	set<TargetType> chosenTargets;
 	if (_targets == "default")
 		for (auto&& v: targetStrings | ranges::views::values)
+		{
+			if (versionAtLeast080() && (v == TargetType::Underflow || v == TargetType::Overflow))
+				continue;
 			chosenTargets.insert(v);
+		}
 	else
 		for (auto&& t: _targets | ranges::views::split(',') | ranges::to<vector<string>>())
 		{

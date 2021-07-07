@@ -34,6 +34,9 @@ The other verification targets that the SMTChecker checks at compile time are:
 - Out of bounds index access.
 - Insufficient funds for a transfer.
 
+All the targets above are automatically checked by default if all engines are
+enabled, except underflow and overflow for Solidity >=0.8.0.
+
 The potential warnings that the SMTChecker reports are:
 
 - ``<failing  property> happens here.``. This means that the SMTChecker proved that a certain property fails. A counterexample may be given, however in complex situations it may also not show a counterexample. This result may also be a false positive in certain cases, when the SMT encoding adds abstractions for Solidity code that is either hard or impossible to express.
@@ -470,6 +473,8 @@ The keywords that represent the targets are:
 
 A common subset of targets might be, for example:
 ``--model-checker-targets assert,overflow``.
+
+All targets are checked by default, except underflow and overflow for Solidity >=0.8.0.
 
 There is no precise heuristic on how and when to split verification targets,
 but it can be useful especially when dealing with large contracts.

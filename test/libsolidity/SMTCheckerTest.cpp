@@ -45,6 +45,11 @@ SMTCheckerTest::SMTCheckerTest(string const& _filename): SyntaxTest(_filename, E
 
 	m_modelCheckerSettings.solvers &= ModelChecker::availableSolvers();
 
+	/// Underflow and Overflow are not enabled by default for Solidity >=0.8.0,
+	/// so we explicitly enable them for the tests.
+	m_modelCheckerSettings.targets.setFromString("underflow");
+	m_modelCheckerSettings.targets.setFromString("overflow");
+
 	auto engine = ModelCheckerEngine::fromString(m_reader.stringSetting("SMTEngine", "all"));
 	if (engine)
 		m_modelCheckerSettings.engine = *engine;
